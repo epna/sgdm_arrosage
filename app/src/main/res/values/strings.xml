@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Arrosage</string>
+    <string name="title_home">Manuel</string>
+    <string name="title_dashboard">Automatique</string>
+    <string name="title_notifications">paramétres</string>
+    <string name="IP_arduino">http://192.168.1.75</string>
+    <string name="disagree">Annuler</string>
+    <string name="agree">OK</string>
+    <string name="title">Modification de la session</string>
+    <string-array name="days_array">
+        <item>L</item>
+        <item>Ma</item>
+        <item>Me</item>
+        <item>J</item>
+        <item>V</item>
+        <item>S</item>
+        <item>D</item>
+    </string-array>
+
+</resources>
