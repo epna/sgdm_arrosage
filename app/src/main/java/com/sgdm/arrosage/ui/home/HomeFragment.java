@@ -254,6 +254,7 @@ public class HomeFragment extends Fragment {
                 assert c != null;
                 Integer fin = c.getInt ( "duree" ) + c.getInt ( "depuis" );
                 Integer heure = fin /60;
+
                 Integer minute = fin %60;
 
                 txt_synthese.setText ( libarro[j + 1] + " fin : " + heure.toString ()+":" +minute.toString () );
