@@ -54,6 +54,7 @@ public void newToken (){
                     Toast.makeText(MainActivity.this, token, Toast.LENGTH_SHORT).show();
                     onNewToken ( token );
                     Log.d(TAG, token);
+                    Log.d(TAG,TAG);
                 }
             });
 
@@ -88,7 +89,7 @@ public void newTopic () {
 
         // If you want to send messages to this application instance or
         // manage this apps subscriptions on the server side, send the
-        // Instance ID token to your app server.
+        // Instance ID token to your app server.   v
         FirebaseDatabase database = FirebaseDatabase.getInstance ();
         DatabaseReference myRef = database.getReference ( "arrosage" );
         myRef.child ( "token" ).setValue ( token);
