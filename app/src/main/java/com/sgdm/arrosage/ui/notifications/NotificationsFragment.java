@@ -20,7 +20,16 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.sgdm.arrosage.MainActivity;
 import com.sgdm.arrosage.R;
+
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class NotificationsFragment extends Fragment {
 
@@ -29,7 +38,7 @@ public class NotificationsFragment extends Fragment {
     public TextInputEditText edit_arro1, edit_arro2, edit_arro3, edit_arro4;
     public int valAF, valWA;
     String[] libarro = new String[5];
-
+    public boolean modifMax = false;
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         notificationsViewModel =
@@ -40,13 +49,13 @@ public class NotificationsFragment extends Fragment {
 
 
 
-        sliderAF = (Slidr) root.findViewById ( R.id.sliderAF);
-        sliderWA = (Slidr) root.findViewById ( R.id.sliderWA);
+        sliderAF = root.findViewById ( R.id.sliderAF);
+        sliderWA = root.findViewById ( R.id.sliderWA);
 
-        edit_arro1 = (TextInputEditText) root.findViewById ( R.id.edit_arro1);
-        edit_arro2 = (TextInputEditText) root.findViewById ( R.id.edit_arro2);
-        edit_arro3 = (TextInputEditText) root.findViewById ( R.id.edit_arro3);
-        edit_arro4 = (TextInputEditText) root.findViewById ( R.id.edit_arro4);
+        edit_arro1 = root.findViewById ( R.id.edit_arro1);
+        edit_arro2 = root.findViewById ( R.id.edit_arro2);
+        edit_arro3 = root.findViewById ( R.id.edit_arro3);
+        edit_arro4 = root.findViewById ( R.id.edit_arro4);
 
         FirebaseDatabase database = FirebaseDatabase.getInstance (  );
         DatabaseReference myRef = database.getReference ( "arrosage" );
@@ -156,7 +165,7 @@ public class NotificationsFragment extends Fragment {
 
                     sliderAF.setMin(sliderWA.getCurrentValue ());
                     sliderAF.clearSteps ();
-                    //sliderAF.addStep(new Slidr.Step("test", sliderWA.getCurrentValue (), Color.parseColor("#007E90"), Color.RED));
+                    modifMax=true;
                 }
             }
 
@@ -179,7 +188,7 @@ public class NotificationsFragment extends Fragment {
                     DatabaseReference myRef = database.getReference ( "arrosage" );
                     myRef.child ( "duree" ).child ( "max2" ).setValue (  intValue );
                     sliderWA.setMax(sliderAF.getCurrentValue ());
-
+                    modifMax=true;
 
                 }
             }
@@ -205,5 +214,37 @@ public class NotificationsFragment extends Fragment {
 
 
         return root;
+    }
+
+    @Override
+    public void onPause(){
+        super.onPause();
+        if (modifMax) Echange_centrale (( getResources ().getString ( R.string.IP_arduino )+"/?") + "modiflistemax" );
+    }
+
+    public void Echange_centrale(String MyURL) {
+        final OkHttpClient client = new OkHttpClient ();
+        Request request = new Request.Builder ()
+                .url ( MyURL )
+                .get ()
+                .build ();
+        client.newCall ( request ).enqueue ( new Callback () {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                String mMessage = e.getMessage ();
+
+            }
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String mMessage = response.body ().string ();
+                if (response.isSuccessful ()) {
+                    try {
+                        Log.v ( "== arrosage ==" , mMessage );
+                    } catch (Exception e) {
+                        e.printStackTrace ();
+                    }
+                }
+            }
+        } );
     }
 }

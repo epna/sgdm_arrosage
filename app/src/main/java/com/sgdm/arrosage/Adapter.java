@@ -180,7 +180,8 @@ public class Adapter extends  RecyclerView.Adapter<Adapter.ViewHolder> {
                                      DatabaseReference myRef5 = database2.getReference ( "arrosage/arro_auto/" + sessions.get ( getAdapterPosition() ).getKey () );
                                      Echange_centrale (   v.getResources ().getString ( R.string.IP_arduino )+ "/?action=supprarro&key="+ sessions.get ( getAdapterPosition() ).getKey ());
                                      myRef5.removeValue ();
-                                     sessions.remove ( getAdapterPosition() );
+                                     sessions.clear ();
+
 
                                  }
                              } );

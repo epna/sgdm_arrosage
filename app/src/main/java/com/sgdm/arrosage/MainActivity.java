@@ -20,8 +20,8 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-public class MainActivity extends AppCompatActivity {
-    final String TAG = "== Arrosage == ";
+public class MainActivity extends AppCompatActivity{
+    public final String TAG = "== Arrosage == ";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate ( savedInstanceState );
@@ -35,44 +35,44 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController ( this, R.id.nav_host_fragment );
         NavigationUI.setupActionBarWithNavController ( this, navController, appBarConfiguration );
         NavigationUI.setupWithNavController ( navView, navController );
-        newToken ();
-        newTopic ();
+        //newToken ();
+        //newTopic ();
     }
-public void newToken (){
+    public void newToken (){
 
-    FirebaseInstanceId.getInstance().getInstanceId()
-            .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-                @Override
-                public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                    if (!task.isSuccessful()) {
-                        Log.w(TAG, "getInstanceId failed", task.getException());
-                        return;
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "getInstanceId failed", task.getException());
+                            return;
+                        }
+
+                        // Get new Instance ID token
+                        String token = task.getResult().getToken();
+                        Toast.makeText(MainActivity.this, token, Toast.LENGTH_SHORT).show();
+                        onNewToken ( token );
+                        Log.d(TAG, token);
+                        Log.d(TAG,TAG);
                     }
+                });
 
-                    // Get new Instance ID token
-                    String token = task.getResult().getToken();
-                    Toast.makeText(MainActivity.this, token, Toast.LENGTH_SHORT).show();
-                    onNewToken ( token );
-                    Log.d(TAG, token);
-                    Log.d(TAG,TAG);
-                }
-            });
-
-}
-public void newTopic () {
+    }
+    public void newTopic () {
 
 
-    FirebaseMessaging.getInstance ().subscribeToTopic ( "sgdm_arrosage" )
-            .addOnCompleteListener ( new OnCompleteListener<Void> () {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    Log.d ( TAG, "Soucription channel");
-                    Toast.makeText ( MainActivity.this, "Souscription chanel", Toast.LENGTH_SHORT ).show ();
-                }
-            } );
+        FirebaseMessaging.getInstance ().subscribeToTopic ( "sgdm_arrosage" )
+                .addOnCompleteListener ( new OnCompleteListener<Void> () {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        Log.d ( TAG, "Soucription channel");
+                        Toast.makeText ( MainActivity.this, "Souscription chanel", Toast.LENGTH_SHORT ).show ();
+                    }
+                } );
 
 
-}
+    }
     /**
      * Called if InstanceID token is updated. This may occur if the security of
      * the previous token had been compromised. Note that this is called when the InstanceID token
