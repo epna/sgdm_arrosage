@@ -52,13 +52,6 @@ public class HomeFragment extends Fragment {
     public TextView txt_start;
     public TextView txt_warning;
     public TextView txt_stop;
-
-    /*
-    public SwipeButton sw_arro1;
-    public SwipeButton sw_arro2;
-    public SwipeButton sw_arro3;
-    public SwipeButton sw_arro4;
-     */
     public int ArrosageEnCours=-1;
     public int max_warning, max_arret;
     String[] libarro = new String[5];
@@ -71,10 +64,10 @@ public class HomeFragment extends Fragment {
     public SwipeButton   sw_arro[] = new SwipeButton[5];
 
     private NotificationsViewModel notificationsViewModel;
+
     public View onCreateView(@NonNull LayoutInflater inflater,ViewGroup container, Bundle savedInstanceState) {
         notificationsViewModel = ViewModelProviders.of ( this ).get ( NotificationsViewModel.class );
         View root = inflater.inflate ( R.layout.fragment_home, container, false );
-
         txt_synthese = (TextView) root.findViewById ( R.id.txt_home_synthese);
         txt_start = (TextView) root.findViewById ( R.id.txt_start_manu);
         txt_warning= (TextView) root.findViewById ( R.id.txt_warning_manu);
@@ -83,43 +76,33 @@ public class HomeFragment extends Fragment {
         sw_arro[2]= (SwipeButton) root.findViewById ( R.id.swipe_arro2);
         sw_arro[3]= (SwipeButton) root.findViewById ( R.id.swipe_arro3);
         sw_arro[4]= (SwipeButton) root.findViewById ( R.id.swipe_arro4);
-
-
-
-
         txt_synthese.setText ( "" );
         retrieve_global_data();
         EchangeArduino (  getResources().getString(R.string.IP_arduino)+ "/?getstatus" );
-
-
         sw_arro[1].setOnActiveListener ( new OnActiveListener () {
            @Override
                 public void onActive() {
                     senddata ( 1, true );
                 }
             } );
-
         sw_arro[2].setOnActiveListener ( new OnActiveListener () {
             @Override
             public void onActive() {
                 senddata ( 2, true );
             }
         } );
-
         sw_arro[3].setOnActiveListener ( new OnActiveListener () {
             @Override
             public void onActive() {
                 senddata ( 3, true );
             }
         } );
-
         sw_arro[4].setOnActiveListener ( new OnActiveListener () {
             @Override
             public void onActive() {
                 senddata ( 4, true );
             }
         } );
-
         return root;
     }
 
@@ -147,10 +130,7 @@ public class HomeFragment extends Fragment {
             }
 
         }
-
         EchangeArduino (    FullURL);
-
-
     }
 
     public void retrieve_global_data() {
@@ -225,14 +205,16 @@ public class HomeFragment extends Fragment {
             e.printStackTrace ();
         }
         JSONArray manuel = null;
+        JSONArray automatique = null;
+
         try {
             manuel = jsonObj.getJSONArray ( "manuel" );
         } catch (JSONException e) {
             e.printStackTrace ();
         }
         for (int j = 0; j < manuel.length (); j++) {
-            sw_arro[j+1].setBackground ( ContextCompat.getDrawable(getContext (), R.drawable.shape_rounded) );
-            sw_arro[j+1].setText ( libarro[j+1] );
+            sw_arro[j + 1].setBackground ( ContextCompat.getDrawable ( getContext (), R.drawable.shape_rounded ) );
+            sw_arro[j + 1].setText ( libarro[j + 1] );
             JSONObject c = null;
             try {
                 c = manuel.getJSONObject ( j );
@@ -243,22 +225,49 @@ public class HomeFragment extends Fragment {
                 assert c != null;
                 if (c.getString ( "actif" ).equals ( "on" )) {
                     sw_arro[j + 1].setText ( "Arrêter " + libarro[1] );
-                     Get_Synthese ( c, j+1 ) ;
-                    ArrosageEnCours = j+1;
-                    sw_arro[j+1].setBackground ( ContextCompat.getDrawable(getContext (), R.drawable.shape_rounded_running) );
+                    Get_Synthese ( c, j + 1 );
+                    ArrosageEnCours = j + 1;
+                    sw_arro[j + 1].setBackground ( ContextCompat.getDrawable ( getContext (), R.drawable.shape_rounded_running ) );
+                    for (int iii= 1; iii<5;iii++) {
+                        sw_arro[iii].setEnabled ( false );
+                    }
                 }
             } catch (JSONException e) {
                 e.printStackTrace ();
             }
         }
-        FancyToast.makeText(getContext (), "Application initialisée", FancyToast.LENGTH_LONG, R.drawable.ic_watering3, false).show();
-    }
+
+
+        try {
+            automatique = jsonObj.getJSONArray ( "automatique" );
+        } catch (JSONException e) {
+            e.printStackTrace ();
+        }
+        for (int j = 0; j < automatique.length (); j++) {
+            JSONObject c = null;
+            try {
+                c = automatique.getJSONObject ( j );
+            } catch (JSONException e) {
+                e.printStackTrace ();
+            }
+            try {
+                assert c != null;
+                Integer fin = c.getInt ( "duree" ) + c.getInt ( "depuis" );
+                Integer heure = fin /60;
+                Integer minute = fin %60;
+
+                txt_synthese.setText ( libarro[j + 1] + " fin : " + heure.toString ()+":" +minute.toString () );
+            } catch (JSONException e) {
+                e.printStackTrace ();
+            }
+        }
+        }
+
+
 
 String Get_Synthese (JSONObject data_manuel, int arroseur_synt )
     {
         String manu_heuredebut, manu_heureavert, manu_heurefin;
-
-
 
         DateFormat df = new SimpleDateFormat ( "HH:mm" );
         Calendar now = Calendar.getInstance ();
@@ -270,7 +279,6 @@ String Get_Synthese (JSONObject data_manuel, int arroseur_synt )
         }
         manu_heuredebut = df.format ( now.getTime () ).toString ();
         now.add ( MINUTE, max_warning );
-
         manu_heureavert = df.format ( now.getTime () ).toString ();
         now.add ( MINUTE, max_arret - max_warning);
         manu_heurefin = df.format ( now.getTime () ).toString ();
@@ -282,5 +290,10 @@ String Get_Synthese (JSONObject data_manuel, int arroseur_synt )
         return "";
 
 
+    }
+    @Override
+    public void onResume(){
+        super.onResume();
+        EchangeArduino (  getResources().getString(R.string.IP_arduino)+ "/?getstatus" );
     }
 }
