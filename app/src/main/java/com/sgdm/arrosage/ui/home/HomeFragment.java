@@ -24,6 +24,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.sgdm.arrosage.MainActivity;
 import com.sgdm.arrosage.R;
 import com.sgdm.arrosage.ui.notifications.NotificationsViewModel;
 import com.shashank.sony.fancytoastlib.FancyToast;
@@ -54,7 +55,7 @@ public class HomeFragment extends Fragment {
     public TextView txt_stop;
     public int ArrosageEnCours=-1;
     public int max_warning, max_arret;
-    String[] libarro = new String[5];
+    //String[] libarro = new String[5];
     final String TAG = "== Arrosage == ";
     private HomeViewModel homeViewModel;
 
@@ -117,12 +118,12 @@ public class HomeFragment extends Fragment {
             for (int iii= 1; iii<5;iii++) {
                 sw_arro[iii].setEnabled ( true );
             }
-            FancyToast.makeText ( getContext (), "Arrêt  " + libarro[arroseur], FancyToast.LENGTH_LONG, R.drawable.ic_watering3, false ).show ();
+            FancyToast.makeText ( getContext (), "Arrêt  " + MainActivity.libarro[arroseur], FancyToast.LENGTH_LONG, R.drawable.ic_watering3, false ).show ();
 
         }
         else
         {
-            FancyToast.makeText ( getContext (), "Démarrage  " + libarro[arroseur], FancyToast.LENGTH_LONG, R.drawable.ic_watering3, false ).show ();
+            FancyToast.makeText ( getContext (), "Démarrage  " + MainActivity.libarro[arroseur], FancyToast.LENGTH_LONG, R.drawable.ic_watering3, false ).show ();
             FullURL+="true";
             ArrosageEnCours=arroseur;
             for (int iii= 1; iii<5;iii++) {
@@ -134,6 +135,7 @@ public class HomeFragment extends Fragment {
     }
 
     public void retrieve_global_data() {
+        /*
         FirebaseDatabase database = FirebaseDatabase.getInstance ();
         DatabaseReference myRef = database.getReference ( "arrosage" );
 
@@ -156,7 +158,7 @@ public class HomeFragment extends Fragment {
                 Log.v ( "XXX", "erreur Firebase" );
             }
         } );
-
+*/
     }
 
 
@@ -214,7 +216,7 @@ public class HomeFragment extends Fragment {
         }
         for (int j = 0; j < manuel.length (); j++) {
             sw_arro[j + 1].setBackground ( ContextCompat.getDrawable ( getContext (), R.drawable.shape_rounded ) );
-            sw_arro[j + 1].setText ( libarro[j + 1] );
+            sw_arro[j + 1].setText ( MainActivity.libarro[j + 1] );
             JSONObject c = null;
             try {
                 c = manuel.getJSONObject ( j );
@@ -224,7 +226,7 @@ public class HomeFragment extends Fragment {
             try {
                 assert c != null;
                 if (c.getString ( "actif" ).equals ( "on" )) {
-                    sw_arro[j + 1].setText ( "Arrêter " + libarro[1] );
+                    sw_arro[j + 1].setText ( "Arrêter " + MainActivity.libarro[1] );
                     Get_Synthese ( c, j + 1 );
                     ArrosageEnCours = j + 1;
                     sw_arro[j + 1].setBackground ( ContextCompat.getDrawable ( getContext (), R.drawable.shape_rounded_running ) );
@@ -257,7 +259,7 @@ public class HomeFragment extends Fragment {
 
                 Integer minute = fin %60;
 
-                txt_synthese.setText ( libarro[j + 1] + " fin : " + heure.toString ()+":" +minute.toString () );
+                txt_synthese.setText ( MainActivity.libarro[j + 1] + " fin : " + heure.toString ()+":" +minute.toString () );
             } catch (JSONException e) {
                 e.printStackTrace ();
             }
@@ -287,7 +289,7 @@ String Get_Synthese (JSONObject data_manuel, int arroseur_synt )
         txt_start.setText ( manu_heuredebut );
         txt_warning.setText ( manu_heureavert );
         txt_stop.setText (  manu_heurefin );
-        txt_synthese.setText ( libarro[arroseur_synt] );
+        txt_synthese.setText ( MainActivity.libarro[arroseur_synt] );
         return "";
 
 

@@ -34,7 +34,7 @@ public class DashboardFragment extends Fragment {
     public Adapter adapter;
     public ArrayList<struct_session> sessions;
     public FloatingActionButton floating_plus;
-    public String[] libarro = new String[5];
+    //public String[] libarro = new String[5];
 
 public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -75,7 +75,7 @@ public View onCreateView(@NonNull LayoutInflater inflater,
         myRef.addListenerForSingleValueEvent ( new ValueEventListener () {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
+                /*
                 int i = 0;
                 for (DataSnapshot chidSnap : dataSnapshot.child ( "libelle" ).getChildren ()) {
                     libarro[i] = (chidSnap.getValue ().toString ());
@@ -83,6 +83,8 @@ public View onCreateView(@NonNull LayoutInflater inflater,
                     i++;
                 }
                 i = 0;
+
+                 */
                 for (DataSnapshot chidSnap : dataSnapshot.child ( "arro_auto" ).getChildren ()) {
                     session_courante = new struct_session ();
                     //sessions.add ( session_courante );

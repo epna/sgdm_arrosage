@@ -37,7 +37,7 @@ public class NotificationsFragment extends Fragment {
     public Slidr sliderAF, sliderWA;
     public TextInputEditText edit_arro1, edit_arro2, edit_arro3, edit_arro4;
     public int valAF, valWA;
-    String[] libarro = new String[5];
+    //String[] libarro = new String[5];
     public boolean modifMax = false;
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -69,15 +69,17 @@ public class NotificationsFragment extends Fragment {
                 valWA = ( Integer.parseInt ( dataSnapshot.child ( "duree/max1" ).getValue ().toString () ));
                 valAF = ( Integer.parseInt ( dataSnapshot.child ( "duree/max2" ).getValue ().toString () ));
 
+                /*
                 int ii = 0;
                 for (DataSnapshot chidSnap : dataSnapshot.child ( "libelle" ).getChildren ()) {
                     ii++;
                     libarro[ii] = chidSnap.getValue ().toString () ;
                 }
-                edit_arro1.setText ( libarro[1] );
-                edit_arro2.setText ( libarro[2] );
-                edit_arro3.setText ( libarro[3] );
-                edit_arro4.setText ( libarro[4] );
+                */
+                edit_arro1.setText ( MainActivity.libarro[1] );
+                edit_arro2.setText ( MainActivity.libarro[2] );
+                edit_arro3.setText ( MainActivity.libarro[3] );
+                edit_arro4.setText ( MainActivity.libarro[4] );
                 sliderAF.setTextMax ( "Max" );
                 sliderAF.setTextMin ( "Min" );
                 sliderWA.setTextMax ( "Max" );

@@ -1,5 +1,8 @@
 package com.sgdm.arrosage;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -7,8 +10,11 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -20,8 +26,12 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import java.util.Objects;
+
 public class MainActivity extends AppCompatActivity{
-    public final String TAG = "== Arrosage == ";
+    public static final String TAG = "== Arrosage == ";
+    public static final String CHANNEL_ID = "sgdm_arrosage";
+    public static String[] libarro = new String[4];
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate ( savedInstanceState );
@@ -37,6 +47,8 @@ public class MainActivity extends AppCompatActivity{
         NavigationUI.setupWithNavController ( navView, navController );
         //newToken ();
         //newTopic ();
+        loadLibArrosage();
+        createNotificationChannel();
     }
     public void newToken (){
 
@@ -59,31 +71,19 @@ public class MainActivity extends AppCompatActivity{
                 });
 
     }
-    public void newTopic () {
 
-
-        FirebaseMessaging.getInstance ().subscribeToTopic ( "sgdm_arrosage" )
-                .addOnCompleteListener ( new OnCompleteListener<Void> () {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        Log.d ( TAG, "Soucription channel");
-                        Toast.makeText ( MainActivity.this, "Souscription chanel", Toast.LENGTH_SHORT ).show ();
-                    }
-                } );
-
-
+    private void createNotificationChannel() {
+        // Créer le NotificationChannel, seulement pour API 26+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "sgdm_arrosage";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription("Notification channel description");
+            // Enregister le canal sur le système : attention de ne plus rien modifier après
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            Objects.requireNonNull(notificationManager).createNotificationChannel(channel);
+        }
     }
-    /**
-     * Called if InstanceID token is updated. This may occur if the security of
-     * the previous token had been compromised. Note that this is called when the InstanceID token
-     * is initially generated so this is where you would retrieve the token.
-     */
-    /**
-     * Called if InstanceID token is updated. This may occur if the security of
-     * the previous token had been compromised. Note that this is called when the InstanceID token
-     * is initially generated so this is where you would retrieve the token.
-     */
-
     public void onNewToken(String token) {
         Log.d(TAG, "Refreshed token: " + token);
 
@@ -94,5 +94,27 @@ public class MainActivity extends AppCompatActivity{
         DatabaseReference myRef = database.getReference ( "arrosage" );
         myRef.child ( "token" ).setValue ( token);
     }
+public void loadLibArrosage() {
 
+    FirebaseDatabase database = FirebaseDatabase.getInstance ();
+    DatabaseReference myRef = database.getReference ( "arrosage" );
+    myRef.addListenerForSingleValueEvent ( new ValueEventListener () {
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+
+            int i = 0;
+            for (DataSnapshot chidSnap : dataSnapshot.child ( "libelle" ).getChildren ()) {
+                libarro[i] = (chidSnap.getValue ().toString ());
+                Log.v ( TAG, libarro[i] );
+                i++;
+            }
+        }
+        ;
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+            Log.v ( TAG, "erreur Firebase" );
+        }
+    } );
+
+}
 }

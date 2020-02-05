@@ -1,24 +1,18 @@
 package com.sgdm.arrosage;
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
-
-
-
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.media.RingtoneManager;
-
+import android.util.Log;
 import androidx.core.app.NotificationCompat;
-import androidx.core.app.RemoteInput;
-
+import androidx.core.app.NotificationManagerCompat;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import java.util.Map;
-import static android.R.drawable.ic_delete;
+import java.util.Random;
 
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
@@ -26,50 +20,90 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public static final int NOTIFICATION_ID = 200;
     public static final int REQUEST_CODE_APPROVE = 101;
     public static final String KEY_INTENT_APPROVE = "keyintentaccept";
-
-
+    public  String mMessage;
+    public static final String TAG = "== Arrosage == ";
+    public  String[] messLibarro = new String[5];
+    public Map<String, String> data;
+    public Boolean fini= false;
+    public Integer requestcode=0;
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
         RemoteMessage.Notification notification = remoteMessage.getNotification();
-        Map<String, String> data = remoteMessage.getData();
-        sendNotification(notification, data);
+        data = remoteMessage.getData();
+        retrieve_global_data() ;
+        while (!fini)  {};
+        fini=false;
+        retrievemessage();
+        while (!fini)  {};
+        sendNotification2 ( data.get ( "arroseur" ), Integer.parseInt ( data.get ( "message" ) ) );
     }
-    private void sendNotification(RemoteMessage.Notification notification, Map<String, String> data) {
-        Bitmap icon = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
-        PendingIntent approvePendingIntent = PendingIntent.getBroadcast(
-                this,
-                REQUEST_CODE_APPROVE,
-                new Intent(this, NotificationReceiver.class)
-                        .putExtra(KEY_INTENT_APPROVE, REQUEST_CODE_APPROVE),
-                PendingIntent.FLAG_UPDATE_CURRENT
-        );
-        RemoteInput remoteInput = new RemoteInput.Builder((NOTIFICATION_REPLY))
-                .setLabel("Approve Comments")
-                .build();
-        NotificationCompat.Action action =
-                new NotificationCompat.Action.Builder(ic_delete,
-                        "Approve", approvePendingIntent)
-                        .addRemoteInput(remoteInput)
-                        .build();
+    public void sendNotification2(String mArroseur, int codeMessage ) {
 
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, "sgdm_arrosage")
-                .setContentTitle("Titre Olivicer")
-                .setContentText("Body Olivier")
-                .setAutoCancel(true)
-                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-                .setContentIntent(approvePendingIntent)
-                .setContentInfo("Titre Olivicer")
-                //.setLargeIcon(icon)
-                //.setColor(Color.GRAY)
-                //.setLights(Color.GRAY, 1000, 300)
-                .setDefaults(Notification.DEFAULT_VIBRATE)
-                //.setSmallIcon(R.mipmap.ic_launcher)
-                .addAction(action);
-        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build());
+
+        Intent snoozeIntent = new Intent(this, MyReceiver.class);
+        snoozeIntent.setAction(Intent.ACTION_SEND);
+        snoozeIntent.putExtra("arroseur", mArroseur);
+        requestcode= requestcode+1;
+        PendingIntent snoozePendingIntent =
+                PendingIntent.getBroadcast(this, 0, snoozeIntent, 0);
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+        NotificationCompat.Builder notifBuilder = new NotificationCompat.Builder(this, MainActivity.CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_watering3)
+                .setContentTitle(messLibarro[Integer.parseInt ( mArroseur)])
+                .setContentText(mMessage)
+                .addAction(R.drawable.ic_stop2,
+                        "Arrêter maintenant",
+                        snoozePendingIntent)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+        Random random = new Random();
+        int m = random.nextInt(9999 - 1000) + 1000;
+        notificationManager.notify(m, notifBuilder.build());
     }
+
+
+    public void retrieve_global_data() {
+        FirebaseDatabase database = FirebaseDatabase.getInstance ();
+        DatabaseReference myRef = database.getReference ( "arrosage" );
+
+        myRef.addListenerForSingleValueEvent ( new ValueEventListener () {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                int ii = 0;
+                for (DataSnapshot chidSnap : dataSnapshot.child ( "libelle" ).getChildren ()) {
+                    ii++;
+                    messLibarro[ii] = chidSnap.getValue ().toString ();
+                }
+               fini=true;
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.v ( "XXX", "erreur Firebase" );
+            }
+        } );
+
+    }
+    public void retrievemessage()
+    {
+        FirebaseDatabase database = FirebaseDatabase.getInstance ();
+        DatabaseReference myRef = database.getReference ( "message" );
+
+        myRef.addListenerForSingleValueEvent ( new ValueEventListener () {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                mMessage = (String) dataSnapshot.child ( data.get("message")+"/libelle" ).getValue ();
+                fini=true;
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.v ( MainActivity.TAG, "erreur Firebase" );
+            }
+        } );
+    }
+
 }
 
 

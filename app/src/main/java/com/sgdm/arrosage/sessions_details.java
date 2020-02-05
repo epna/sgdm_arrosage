@@ -36,7 +36,7 @@ public class sessions_details extends AppCompatActivity {
     public Spinner det_arroseur;
     public MultiStateToggleButton det_frequence;
     public Integer mHour,mMinute;
-    String[] libarro = new String[4];
+    //public static String[] libarro = new String[4];
     final String TAG = "====>Arrosage<====";
     public Boolean det_modifie = false;
     public String mFrequence;
@@ -57,7 +57,7 @@ public class sessions_details extends AppCompatActivity {
         det_duree.setMax ( 120 );
 
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance ();
+        /*FirebaseDatabase database = FirebaseDatabase.getInstance ();
         DatabaseReference myRef = database.getReference ( "arrosage" );
         myRef.addListenerForSingleValueEvent ( new ValueEventListener () {
             @Override
@@ -77,7 +77,7 @@ public class sessions_details extends AppCompatActivity {
                 Log.v ( TAG, "erreur Firebase" );
             }
         } );
-
+        */
     }
 
 
@@ -234,7 +234,7 @@ public void loaddata()
         });
 
         //=========================================================================================================
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, libarro);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, MainActivity.libarro);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         det_arroseur.setAdapter(adapter);
         //=========================================================================================================
