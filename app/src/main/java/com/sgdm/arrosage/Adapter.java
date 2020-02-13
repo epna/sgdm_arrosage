@@ -127,12 +127,8 @@ public class Adapter extends  RecyclerView.Adapter<Adapter.ViewHolder> {
         else
         {
             Picasso.get().load(R.drawable.ic_stop).into(holder.imageViewcust);
-            //Picasso.with(mContext).pl .into(customViewHolder.imageview1);
-
         }
     }
-
-
     @Override
     public int getItemCount() {
         return sessions.size();
@@ -156,7 +152,7 @@ public class Adapter extends  RecyclerView.Adapter<Adapter.ViewHolder> {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(v.getContext(), "Clicked -> " + getAdapterPosition() + " "+ txt2Cust.getText () , Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(v.getContext(), "Clicked -> " + getAdapterPosition() + " "+ txt2Cust.getText () , Toast.LENGTH_SHORT).show();
                     String temp = sessions.get(getAdapterPosition ()).getKey ();
                     page_detail ( temp,  v.getContext (),getAdapterPosition()  );
                 }
@@ -180,9 +176,9 @@ public class Adapter extends  RecyclerView.Adapter<Adapter.ViewHolder> {
                                      DatabaseReference myRef5 = database2.getReference ( "arrosage/arro_auto/" + sessions.get ( getAdapterPosition() ).getKey () );
                                      Echange_centrale (   v.getResources ().getString ( R.string.IP_arduino )+ "/?action=supprarro&key="+ sessions.get ( getAdapterPosition() ).getKey ());
                                      myRef5.removeValue ();
-                                     sessions.clear ();
-
-
+                                     sessions.remove ( getAdapterPosition ());
+                                     notifyItemRemoved(getAdapterPosition());
+                                     notifyItemRangeChanged(getAdapterPosition(),sessions.size());
                                  }
                              } );
 
@@ -201,8 +197,8 @@ public class Adapter extends  RecyclerView.Adapter<Adapter.ViewHolder> {
         }
     }
 
-        public void page_detail (@NotNull final String myKey, final Context mContext, final Integer mPosition) {
-                Intent intent = new Intent ( mContext, sessions_details.class );
+    public void page_detail (@NotNull final String myKey, final Context mContext, final Integer mPosition) {
+            Intent intent = new Intent ( mContext, sessions_details.class );
             intent.putExtra ( "Key", sessions.get(mPosition ).getKey ());
             intent.putExtra ( "Position", mPosition);
             mContext.startActivity ( intent );
