@@ -9,41 +9,37 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.sgdm.arrosage.Adapter;
+import com.sgdm.arrosage.MainActivity;
 import com.sgdm.arrosage.R;
 import com.sgdm.arrosage.sessions_details;
-
 import java.util.ArrayList;
 
 
 public class DashboardFragment extends Fragment {
 
-    private DashboardViewModel dashboardViewModel;
-    RecyclerView recyclerView;
+    //private DashboardViewModel dashboardViewModel;
+    public RecyclerView recyclerView;
     public struct_session session_courante;
     public Adapter adapter;
     public ArrayList<struct_session> sessions;
     public FloatingActionButton floating_plus;
     //public String[] libarro = new String[5];
 
-public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-        dashboardViewModel =
-                ViewModelProviders.of ( this ).get ( DashboardViewModel.class );
-        View root = inflater.inflate ( R.layout.fragment_dashboard, container, false );
-        sessions =  new ArrayList<> (  );
-        recyclerView = root.findViewById ( R.id.recyclerview );
-        //loaddata();
+public View onCreateView(@NonNull LayoutInflater inflater,ViewGroup container, Bundle savedInstanceState) {
+
+    View root = inflater.inflate ( R.layout.fragment_dashboard, container, false );
+    sessions =  new ArrayList<> (  );
+    recyclerView = root.findViewById ( R.id.recyclerview );
+
 
     floating_plus = root.findViewById(R.id.floating_plus);
     floating_plus.setOnClickListener(new View.OnClickListener() {
@@ -51,13 +47,13 @@ public View onCreateView(@NonNull LayoutInflater inflater,
         public void onClick(View view) {
             FirebaseDatabase database = FirebaseDatabase.getInstance ();
             DatabaseReference myRef = database.getReference ( "arrosage/arro_auto" );
-            final String new_key = myRef.push ().getKey ();
-            myRef = database.getReference ( "arrosage/arro_auto/"+ new_key );
-            myRef.child ( "duree" ).setValue ( 15 );
-            myRef.child ( "arroseur" ).setValue ( 0 );
-            myRef.child ( "debut" ).setValue ( 720);
-            myRef.child ( "actif" ).setValue ( false);
-            myRef.child ( "frequence" ).setValue ( "" );
+                final String new_key = myRef.push ().getKey ();
+                myRef = database.getReference ( "arrosage/arro_auto/"+ new_key );
+                myRef.child ( "duree" ).setValue ( 15 );
+                myRef.child ( "arroseur" ).setValue ( 0 );
+                myRef.child ( "debut" ).setValue ( 720);
+                myRef.child ( "actif" ).setValue ( false);
+                myRef.child ( "frequence" ).setValue ( "" );
             Intent intent = new Intent ( getContext (), sessions_details.class );
             intent.putExtra ( "Key", new_key);
             intent.putExtra ( "Position", -1);
@@ -75,19 +71,8 @@ public View onCreateView(@NonNull LayoutInflater inflater,
         myRef.addListenerForSingleValueEvent ( new ValueEventListener () {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                /*
-                int i = 0;
-                for (DataSnapshot chidSnap : dataSnapshot.child ( "libelle" ).getChildren ()) {
-                    libarro[i] = (chidSnap.getValue ().toString ());
-                    Log.v ( "ppp", libarro[i] );
-                    i++;
-                }
-                i = 0;
-
-                 */
                 for (DataSnapshot chidSnap : dataSnapshot.child ( "arro_auto" ).getChildren ()) {
                     session_courante = new struct_session ();
-                    //sessions.add ( session_courante );
                     session_courante.key = chidSnap.getKey ();
                     session_courante.actif = chidSnap.child ( "actif" ).getValue ( boolean.class );
                     session_courante.arroseur = chidSnap.child ( "arroseur" ).getValue ( Integer.class );
@@ -102,7 +87,7 @@ public View onCreateView(@NonNull LayoutInflater inflater,
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.v ( "XXX", "erreur Firebase" );
+                Log.v ( MainActivity.TAG, "erreur Firebase" );
             }
         });
     }

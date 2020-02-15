@@ -2,6 +2,7 @@ package com.sgdm.arrosage.ui.home;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +20,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.ebanx.swipebtn.OnActiveListener;
 import com.ebanx.swipebtn.OnStateChangeListener;
 import com.ebanx.swipebtn.SwipeButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -55,37 +57,38 @@ public class HomeFragment extends Fragment {
     public TextView txt_stop;
     public int ArrosageEnCours=-1;
     public int max_warning, max_arret;
-    //String[] libarro = new String[5];
     final String TAG = "== Arrosage == ";
-    private HomeViewModel homeViewModel;
-
-
-
-
+    public static String[] libarro = new String[4];
     public SwipeButton   sw_arro[] = new SwipeButton[5];
-
-    private NotificationsViewModel notificationsViewModel;
+    public View root;
+    //private NotificationsViewModel notificationsViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,ViewGroup container, Bundle savedInstanceState) {
-        notificationsViewModel = ViewModelProviders.of ( this ).get ( NotificationsViewModel.class );
-        View root = inflater.inflate ( R.layout.fragment_home, container, false );
+        //notificationsViewModel = ViewModelProviders.of ( this ).get ( NotificationsViewModel.class );
+        root = inflater.inflate ( R.layout.fragment_home, container, false );
         txt_synthese = (TextView) root.findViewById ( R.id.txt_home_synthese);
         txt_start = (TextView) root.findViewById ( R.id.txt_start_manu);
         txt_warning= (TextView) root.findViewById ( R.id.txt_warning_manu);
         txt_stop = (TextView) root.findViewById ( R.id.txt_stop_manu);
-        sw_arro[1]= (SwipeButton) root.findViewById ( R.id.swipe_arro1);
-        sw_arro[2]= (SwipeButton) root.findViewById ( R.id.swipe_arro2);
-        sw_arro[3]= (SwipeButton) root.findViewById ( R.id.swipe_arro3);
-        sw_arro[4]= (SwipeButton) root.findViewById ( R.id.swipe_arro4);
+        sw_arro[0]= (SwipeButton) root.findViewById ( R.id.swipe_arro1);
+        sw_arro[1]= (SwipeButton) root.findViewById ( R.id.swipe_arro2);
+        sw_arro[2]= (SwipeButton) root.findViewById ( R.id.swipe_arro3);
+        sw_arro[3]= (SwipeButton) root.findViewById ( R.id.swipe_arro4);
         txt_synthese.setText ( "" );
-        retrieve_global_data();
-        EchangeArduino (  getResources().getString(R.string.IP_arduino)+ "/?getstatus" );
-        sw_arro[1].setOnActiveListener ( new OnActiveListener () {
+
+        initdata ();
+        sw_arro[0].setOnActiveListener ( new OnActiveListener () {
            @Override
                 public void onActive() {
-                    senddata ( 1, true );
+                    senddata ( 0, true );
                 }
             } );
+        sw_arro[1].setOnActiveListener ( new OnActiveListener () {
+            @Override
+            public void onActive() {
+                senddata ( 1, true );
+            }
+        } );
         sw_arro[2].setOnActiveListener ( new OnActiveListener () {
             @Override
             public void onActive() {
@@ -98,24 +101,18 @@ public class HomeFragment extends Fragment {
                 senddata ( 3, true );
             }
         } );
-        sw_arro[4].setOnActiveListener ( new OnActiveListener () {
-            @Override
-            public void onActive() {
-                senddata ( 4, true );
-            }
-        } );
         return root;
     }
 
     public void senddata(int arroseur, boolean actif )
     {
 
-        String FullURL = getResources().getString(R.string.IP_arduino)+ "/?arro=" + (arroseur-1);
+        String FullURL = getResources().getString(R.string.IP_arduino)+ "/?arro=" + (arroseur);
         if (arroseur==ArrosageEnCours)
         {
             FullURL+= "false";
             ArrosageEnCours=-1;
-            for (int iii= 1; iii<5;iii++) {
+            for (int iii= 0; iii<4;iii++) {
                 sw_arro[iii].setEnabled ( true );
             }
             FancyToast.makeText ( getContext (), "Arrêt  " + MainActivity.libarro[arroseur], FancyToast.LENGTH_LONG, R.drawable.ic_watering3, false ).show ();
@@ -123,42 +120,15 @@ public class HomeFragment extends Fragment {
         }
         else
         {
-            FancyToast.makeText ( getContext (), "Démarrage  " + MainActivity.libarro[arroseur], FancyToast.LENGTH_LONG, R.drawable.ic_watering3, false ).show ();
+            FancyToast.makeText ( getContext (), "Démarrage  " + MainActivity.libarro[arroseur], FancyToast.LENGTH_LONG, FancyToast.WARNING, false ).show ();
             FullURL+="true";
             ArrosageEnCours=arroseur;
-            for (int iii= 1; iii<5;iii++) {
+            for (int iii= 0; iii<4;iii++) {
                 sw_arro[iii].setEnabled ( iii == ArrosageEnCours );
             }
 
         }
         EchangeArduino (    FullURL);
-    }
-
-    public void retrieve_global_data() {
-        /*
-        FirebaseDatabase database = FirebaseDatabase.getInstance ();
-        DatabaseReference myRef = database.getReference ( "arrosage" );
-
-        myRef.addListenerForSingleValueEvent ( new ValueEventListener () {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                max_warning = Integer.parseInt ( dataSnapshot.child ( "duree/max1" ).getValue ().toString () );
-                max_arret = Integer.parseInt ( dataSnapshot.child ( "duree/max2" ).getValue ().toString () );
-                int ii=0;
-                for (DataSnapshot chidSnap : dataSnapshot.child ( "libelle" ).getChildren ()) {
-                    ii++;
-                    libarro[ii] = chidSnap.getValue ().toString ();
-                    Log.d(TAG,libarro[ii]);
-                    sw_arro[ii].setText ( libarro[ii] );
-                }
-
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.v ( "XXX", "erreur Firebase" );
-            }
-        } );
-*/
     }
 
 
@@ -194,10 +164,20 @@ public class HomeFragment extends Fragment {
 
 
     public void retourArduino(String DataArduino) {
-        txt_synthese.setText ( "" );
-        txt_start.setText ( "" );
-        txt_warning.setText ( "" );
-        txt_stop.setText ( "" );
+
+        new Handler( Looper.getMainLooper()).post( new Runnable(){
+            @Override
+            public void run() {
+                txt_synthese.setText ( "" );
+                txt_start.setText ( "" );
+                txt_warning.setText ( "" );
+                txt_stop.setText ( "" );
+            }
+        });
+
+
+
+
 
 
         JSONObject jsonObj = null;
@@ -214,24 +194,46 @@ public class HomeFragment extends Fragment {
         } catch (JSONException e) {
             e.printStackTrace ();
         }
-        for (int j = 0; j < manuel.length (); j++) {
-            sw_arro[j + 1].setBackground ( ContextCompat.getDrawable ( getContext (), R.drawable.shape_rounded ) );
-            sw_arro[j + 1].setText ( MainActivity.libarro[j + 1] );
+        for ( int j = 0; j < manuel.length (); j++) {
+            final Integer mj=j;
+            new Handler( Looper.getMainLooper()).post( new Runnable(){
+                @Override
+                public void run() {
+                    sw_arro[mj ].setBackground ( ContextCompat.getDrawable ( getContext (), R.drawable.shape_rounded ) );
+                    sw_arro[mj ].setText ( MainActivity.libarro[mj ] );
+                }
+            });
+
+
             JSONObject c = null;
             try {
-                c = manuel.getJSONObject ( j );
+                c = manuel.getJSONObject ( mj );
             } catch (JSONException e) {
                 e.printStackTrace ();
             }
             try {
                 assert c != null;
                 if (c.getString ( "actif" ).equals ( "on" )) {
-                    sw_arro[j + 1].setText ( "Arrêter " + MainActivity.libarro[1] );
-                    Get_Synthese ( c, j + 1 );
-                    ArrosageEnCours = j + 1;
-                    sw_arro[j + 1].setBackground ( ContextCompat.getDrawable ( getContext (), R.drawable.shape_rounded_running ) );
-                    for (int iii= 1; iii<5;iii++) {
-                        sw_arro[iii].setEnabled ( false );
+                    Get_Synthese ( c, mj );
+                    ArrosageEnCours = mj ;
+                    new Handler(Looper.getMainLooper()).post(new Runnable(){
+                        @Override
+                        public void run() {
+                            sw_arro[mj].setText ( "Arrêter " + MainActivity.libarro[mj] );
+                            sw_arro[mj].setBackground ( ContextCompat.getDrawable ( getContext (), R.drawable.shape_rounded_running ) );
+
+                        }
+                    });
+
+                    for ( int iii= 0; iii<4;iii++) {
+                        final Integer miii =iii;
+                        new Handler(Looper.getMainLooper()).post(new Runnable(){
+                            @Override
+                            public void run() {
+                                sw_arro[miii].setEnabled ( mj==miii );
+                            }
+                        });
+
                     }
                 }
             } catch (JSONException e) {
@@ -252,25 +254,32 @@ public class HomeFragment extends Fragment {
             } catch (JSONException e) {
                 e.printStackTrace ();
             }
+            final Integer mj = j;
             try {
                 assert c != null;
                 Integer fin = c.getInt ( "duree" ) + c.getInt ( "depuis" );
-                Integer heure = fin /60;
+                final Integer heure = fin /60;
+                final Integer minute = fin %60;
+                Snackbar snb_automattique= Snackbar.make ( root.findViewById(R.id.navigation) , "arrosage automatique  " + MainActivity.libarro[mj ] + " fin : " + heure.toString ()+":" +minute.toString (),Snackbar.LENGTH_LONG );
+                snb_automattique.show ();
+                for ( int iii= 0; iii<4;iii++) {
+                    final Integer miii =iii;
+                    new Handler(Looper.getMainLooper()).post(new Runnable(){
+                        @Override
+                        public void run() {
+                            sw_arro[miii].setEnabled ( false);
+                        }
+                    });
+                };
 
-                Integer minute = fin %60;
-
-                txt_synthese.setText ( MainActivity.libarro[j + 1] + " fin : " + heure.toString ()+":" +minute.toString () );
             } catch (JSONException e) {
                 e.printStackTrace ();
             }
         }
         }
-
-
-
-String Get_Synthese (JSONObject data_manuel, int arroseur_synt )
+String Get_Synthese (JSONObject data_manuel, final int arroseur_synt )
     {
-        String manu_heuredebut, manu_heureavert, manu_heurefin;
+        final String manu_heuredebut, manu_heureavert, manu_heurefin;
 
         DateFormat df = new SimpleDateFormat ( "HH:mm" );
         Calendar now = Calendar.getInstance ();
@@ -286,12 +295,48 @@ String Get_Synthese (JSONObject data_manuel, int arroseur_synt )
         now.add ( MINUTE, max_arret - max_warning);
         manu_heurefin = df.format ( now.getTime () ).toString ();
 
-        txt_start.setText ( manu_heuredebut );
-        txt_warning.setText ( manu_heureavert );
-        txt_stop.setText (  manu_heurefin );
-        txt_synthese.setText ( MainActivity.libarro[arroseur_synt] );
+
+        new Handler(Looper.getMainLooper()).post(new Runnable(){
+            @Override
+            public void run() {
+                txt_start.setText ( manu_heuredebut );
+                txt_warning.setText ( manu_heureavert );
+                txt_stop.setText (  manu_heurefin );
+                txt_synthese.setText ( MainActivity.libarro[arroseur_synt] );
+
+            }
+        });
+
         return "";
 
+
+    }
+
+
+
+    public void initdata(){
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance ();
+        DatabaseReference myRef = database.getReference ( "arrosage" );
+        myRef.addListenerForSingleValueEvent ( new ValueEventListener () {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                max_warning = ( Integer.parseInt ( dataSnapshot.child ( "duree/max1" ).getValue ().toString () ));
+                max_arret = ( Integer.parseInt ( dataSnapshot.child ( "duree/max2" ).getValue ().toString () ));
+                int i = 0;
+                for (DataSnapshot chidSnap : dataSnapshot.child ( "libelle" ).getChildren ()) {
+                    libarro[i] = (chidSnap.getValue ().toString ());
+                    Log.v ( TAG, libarro[i] );
+                    i++;
+                }
+                EchangeArduino (  getResources().getString(R.string.IP_arduino)+ "/?getstatus" );
+            }
+            ;
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.v ( TAG, "erreur Firebase" );
+            }
+        } );
 
     }
     @Override

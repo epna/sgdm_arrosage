@@ -1,6 +1,10 @@
 package com.sgdm.arrosage;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -24,8 +28,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public static final String TAG = "== Arrosage == ";
     public  String[] messLibarro = new String[5];
     public Map<String, String> data;
-    public Boolean fini= false;
+    public Boolean fini= false, mAction, mPhoto;
     public Integer requestcode=0;
+    public Integer mType;
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
@@ -37,11 +42,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         fini=false;
         retrievemessage();
         while (!fini)  {};
-        sendNotification2 ( data.get ( "arroseur" ), Integer.parseInt ( data.get ( "message" ) ) );
+        sendNotification2 ( Integer.parseInt ( data.get ( "arroseur" ).toString ()));
     }
-    public void sendNotification2(String mArroseur, int codeMessage ) {
 
 
+
+
+
+    public void sendNotification2(Integer mArroseur ) {
         Intent snoozeIntent = new Intent(this, MyReceiver.class);
         snoozeIntent.setAction(Intent.ACTION_SEND);
         snoozeIntent.putExtra("arroseur", mArroseur);
@@ -49,14 +57,27 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         PendingIntent snoozePendingIntent =
                 PendingIntent.getBroadcast(this, 0, snoozeIntent, 0);
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+
         NotificationCompat.Builder notifBuilder = new NotificationCompat.Builder(this, MainActivity.CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_watering3)
-                .setContentTitle(messLibarro[Integer.parseInt ( mArroseur)])
                 .setContentText(mMessage)
-                .addAction(R.drawable.ic_stop2,
-                        "Arrêter maintenant",
-                        snoozePendingIntent)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+        /// Cas psécial de l'action sur la notification
+        if (  mArroseur > -1) notifBuilder.setContentTitle(messLibarro[ ( mArroseur)]);
+        if (mAction) notifBuilder.addAction(R.drawable.ic_stop2,"Arrêter maintenant",snoozePendingIntent);
+        if (mPhoto) {
+            Bitmap bitmap_large=null;
+            if (mArroseur==0)  bitmap_large=BitmapFactory.decodeResource(this.getResources(),R.drawable.arro1);
+            if (mArroseur==1)  bitmap_large=BitmapFactory.decodeResource(this.getResources(),R.drawable.arro2);
+            if (mArroseur==2)  bitmap_large=BitmapFactory.decodeResource(this.getResources(),R.drawable.arro3);
+            if (mArroseur==3)  bitmap_large=BitmapFactory.decodeResource(this.getResources(),R.drawable.arro4);
+            Drawable d = new BitmapDrawable (getResources(), bitmap_large);
+
+            notifBuilder.setLargeIcon(bitmap_large )
+                    .setStyle(new NotificationCompat.BigPictureStyle()
+                            .bigPicture(bitmap_large)
+                            .bigLargeIcon(null));
+        }
         Random random = new Random();
         int m = random.nextInt(9999 - 1000) + 1000;
         notificationManager.notify(m, notifBuilder.build());
@@ -72,8 +93,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 int ii = 0;
                 for (DataSnapshot chidSnap : dataSnapshot.child ( "libelle" ).getChildren ()) {
-                    ii++;
+
                     messLibarro[ii] = chidSnap.getValue ().toString ();
+                    ii++;
                 }
                fini=true;
             }
@@ -94,6 +116,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 mMessage = (String) dataSnapshot.child ( data.get("message")+"/libelle" ).getValue ();
+                mType = Integer.parseInt (   dataSnapshot.child ( data.get("message")+"/type" ).getValue ().toString ());
+                mPhoto= Boolean.valueOf (   dataSnapshot.child ( data.get("message")+"/photo" ).getValue ().toString ());
+                mAction= Boolean.valueOf (   dataSnapshot.child ( data.get("message")+"/action" ).getValue ().toString ());
                 fini=true;
             }
 

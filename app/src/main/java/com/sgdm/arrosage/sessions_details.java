@@ -55,7 +55,7 @@ public class sessions_details extends AppCompatActivity {
         det_arroseur = findViewById ( R.id.det_arroseur );
         det_frequence = findViewById ( (R.id.det_mstb_multi_id) );
         det_duree.setMax ( 120 );
-
+        loaddata ();
 
         /*FirebaseDatabase database = FirebaseDatabase.getInstance ();
         DatabaseReference myRef = database.getReference ( "arrosage" );
@@ -69,7 +69,7 @@ public class sessions_details extends AppCompatActivity {
                     Log.v ( TAG, libarro[i] );
                     i++;
                 }
-                loaddata ();
+
             }
             ;
             @Override

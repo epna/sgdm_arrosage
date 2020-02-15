@@ -33,7 +33,7 @@ import okhttp3.Response;
 
 public class NotificationsFragment extends Fragment {
 
-    private NotificationsViewModel notificationsViewModel;
+    //private NotificationsViewModel notificationsViewModel;
     public Slidr sliderAF, sliderWA;
     public TextInputEditText edit_arro1, edit_arro2, edit_arro3, edit_arro4;
     public int valAF, valWA;
@@ -41,8 +41,8 @@ public class NotificationsFragment extends Fragment {
     public boolean modifMax = false;
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        notificationsViewModel =
-                ViewModelProviders.of ( this ).get ( NotificationsViewModel.class );
+        //notificationsViewModel =
+        //        ViewModelProviders.of ( this ).get ( NotificationsViewModel.class );
         View root = inflater.inflate ( R.layout.fragment_notifications, container, false );
 
 
@@ -59,27 +59,15 @@ public class NotificationsFragment extends Fragment {
 
         FirebaseDatabase database = FirebaseDatabase.getInstance (  );
         DatabaseReference myRef = database.getReference ( "arrosage" );
-
         myRef.addListenerForSingleValueEvent ( new ValueEventListener () {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
-
-
                 valWA = ( Integer.parseInt ( dataSnapshot.child ( "duree/max1" ).getValue ().toString () ));
                 valAF = ( Integer.parseInt ( dataSnapshot.child ( "duree/max2" ).getValue ().toString () ));
-
-                /*
-                int ii = 0;
-                for (DataSnapshot chidSnap : dataSnapshot.child ( "libelle" ).getChildren ()) {
-                    ii++;
-                    libarro[ii] = chidSnap.getValue ().toString () ;
-                }
-                */
-                edit_arro1.setText ( MainActivity.libarro[1] );
-                edit_arro2.setText ( MainActivity.libarro[2] );
-                edit_arro3.setText ( MainActivity.libarro[3] );
-                edit_arro4.setText ( MainActivity.libarro[4] );
+                edit_arro1.setText ( MainActivity.libarro[0] );
+                edit_arro2.setText ( MainActivity.libarro[1] );
+                edit_arro3.setText ( MainActivity.libarro[2] );
+                edit_arro4.setText ( MainActivity.libarro[3] );
                 sliderAF.setTextMax ( "Max" );
                 sliderAF.setTextMin ( "Min" );
                 sliderWA.setTextMax ( "Max" );
@@ -96,7 +84,7 @@ public class NotificationsFragment extends Fragment {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.v("XXX", "erreur Firebase");
+                Log.v(MainActivity.TAG, "erreur Firebase");
             }
         } );
         ////////////////////////////////////////////////////////////////
@@ -241,7 +229,7 @@ public class NotificationsFragment extends Fragment {
                 String mMessage = response.body ().string ();
                 if (response.isSuccessful ()) {
                     try {
-                        Log.v ( "== arrosage ==" , mMessage );
+                        Log.v ( MainActivity.TAG , mMessage );
                     } catch (Exception e) {
                         e.printStackTrace ();
                     }
