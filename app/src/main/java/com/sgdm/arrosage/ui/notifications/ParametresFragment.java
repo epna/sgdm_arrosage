@@ -5,14 +5,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-
-import androidx.annotation.Nullable;
+import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
-
 import com.github.florent37.androidslidr.Slidr;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.database.DataSnapshot;
@@ -22,41 +17,31 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.sgdm.arrosage.MainActivity;
 import com.sgdm.arrosage.R;
-
 import java.io.IOException;
-
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class NotificationsFragment extends Fragment {
+public class ParametresFragment extends Fragment {
 
     //private NotificationsViewModel notificationsViewModel;
     public Slidr sliderAF, sliderWA;
     public TextInputEditText edit_arro1, edit_arro2, edit_arro3, edit_arro4;
     public int valAF, valWA;
-    //String[] libarro = new String[5];
+    public Button btn_refresh_Sessions;
     public boolean modifMax = false;
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        //notificationsViewModel =
-        //        ViewModelProviders.of ( this ).get ( NotificationsViewModel.class );
-        View root = inflater.inflate ( R.layout.fragment_notifications, container, false );
-
-
-
-
-
+        View root = inflater.inflate ( R.layout.fragment_parametres, container, false );
         sliderAF = root.findViewById ( R.id.sliderAF);
         sliderWA = root.findViewById ( R.id.sliderWA);
-
         edit_arro1 = root.findViewById ( R.id.edit_arro1);
         edit_arro2 = root.findViewById ( R.id.edit_arro2);
         edit_arro3 = root.findViewById ( R.id.edit_arro3);
         edit_arro4 = root.findViewById ( R.id.edit_arro4);
-
+        btn_refresh_Sessions = root.findViewById ( R.id.resfreshSession );
         FirebaseDatabase database = FirebaseDatabase.getInstance (  );
         DatabaseReference myRef = database.getReference ( "arrosage" );
         myRef.addListenerForSingleValueEvent ( new ValueEventListener () {
@@ -78,10 +63,7 @@ public class NotificationsFragment extends Fragment {
                 sliderAF.setMin(valWA);
                 sliderWA.setCurrentValue ( valWA);
                 sliderAF.setCurrentValue ( valAF);
-
             }
-
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.v(MainActivity.TAG, "erreur Firebase");
@@ -90,13 +72,16 @@ public class NotificationsFragment extends Fragment {
         ////////////////////////////////////////////////////////////////
         /// Event
         ////////////////////////////////////////////////////////////////
-
+        btn_refresh_Sessions.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {Echange_centrale (( getResources ().getString ( R.string.IP_arduino )+"/?") + "refresh" );// Do something in response to button click
+            }
+        });
 
         root.findViewById(R.id.edit_arro1).setOnFocusChangeListener( new View.OnFocusChangeListener () {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
-
+                    MainActivity.libarro[0]=edit_arro1.getText ().toString ();
                     FirebaseDatabase database = FirebaseDatabase.getInstance ();
                     DatabaseReference myRef = database.getReference ( "arrosage" );
                     myRef.child ( "libelle" ).child ( "0" ).setValue ( edit_arro1.getText ().toString ());
@@ -108,7 +93,7 @@ public class NotificationsFragment extends Fragment {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
-
+                    MainActivity.libarro[1]=edit_arro2.getText ().toString ();
                     FirebaseDatabase database = FirebaseDatabase.getInstance ();
                     DatabaseReference myRef = database.getReference ( "arrosage" );
                     myRef.child ( "libelle" ).child ( "1" ).setValue ( edit_arro2.getText ().toString ());
@@ -119,7 +104,7 @@ public class NotificationsFragment extends Fragment {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
-
+                    MainActivity.libarro[2]=edit_arro3.getText ().toString ();
                     FirebaseDatabase database = FirebaseDatabase.getInstance ();
                     DatabaseReference myRef = database.getReference ( "arrosage" );
                     myRef.child ( "libelle" ).child ( "2" ).setValue ( edit_arro3.getText ().toString ());
@@ -131,7 +116,7 @@ public class NotificationsFragment extends Fragment {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
-
+                    MainActivity.libarro[3]=edit_arro4.getText ().toString ();
                     FirebaseDatabase database = FirebaseDatabase.getInstance ();
                     DatabaseReference myRef = database.getReference ( "arrosage" );
                     myRef.child ( "libelle" ).child ( "3" ).setValue ( edit_arro4.getText ().toString ());

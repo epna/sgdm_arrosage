@@ -1,6 +1,5 @@
 package com.sgdm.arrosage;
 import android.app.AlertDialog;
-import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,28 +8,23 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.florent37.androidslidr.Slidr;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.sgdm.arrosage.ui.dashboard.DashboardFragment;
+import com.sgdm.arrosage.ui.dashboard.AutomatiqueFragment;
 import com.squareup.picasso.Picasso;
 
 import org.honorato.multistatetogglebutton.MultiStateToggleButton;
@@ -47,7 +41,7 @@ import okhttp3.Response;
 
 
 public class Adapter extends  RecyclerView.Adapter<Adapter.ViewHolder> {
-    List<DashboardFragment.struct_session> sessions;
+    List<AutomatiqueFragment.struct_session> sessions;
     LayoutInflater inflater;
     Context micontext;
     public MultiStateToggleButton frm_MultiButton;
@@ -55,12 +49,12 @@ public class Adapter extends  RecyclerView.Adapter<Adapter.ViewHolder> {
     public  Slidr frm_Duree;
     public  ToggleButton frm_Actif;
     public  TextView frm_Time;
-    public  DashboardFragment.struct_session session_courante;
+    public  AutomatiqueFragment.struct_session session_courante;
     final String TAG = "====>Arrosage<====";
 
     //ItemLongClickListener itemLongClickListener;
     public static String[] libarro = new String[4];
-    public Adapter(Context ctx, List<DashboardFragment.struct_session> fullSession){
+    public Adapter(Context ctx, List<AutomatiqueFragment.struct_session> fullSession){
         this.sessions = fullSession;
         this.inflater = LayoutInflater.from(ctx);
     }
@@ -87,7 +81,7 @@ public class Adapter extends  RecyclerView.Adapter<Adapter.ViewHolder> {
         if (fb_Frequence.contains ( "4" )) param_session += "J ";
         if (fb_Frequence.contains ( "5" )) param_session += "V ";
         if (fb_Frequence.contains ( "6" )) param_session += "S ";
-        param_session +=  " " + heure_format + ":" + minute_format + " durée " + fb_duree + " m";
+        param_session +=  " " + heure_format + ":" + minute_format + " durée " + fb_duree + " mn";
         FirebaseDatabase database = FirebaseDatabase.getInstance ();
         DatabaseReference myRef = database.getReference ().child ( "arrosage/libelle/"+sessions.get ( position ).getArroseur ().toString ()  );
         myRef.addListenerForSingleValueEvent ( new ValueEventListener () {

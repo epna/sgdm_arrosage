@@ -60,10 +60,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         NotificationCompat.Builder notifBuilder = new NotificationCompat.Builder(this, MainActivity.CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_watering3)
-                .setContentText(mMessage)
+                .setContentTitle(mMessage)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
         /// Cas psécial de l'action sur la notification
-        if (  mArroseur > -1) notifBuilder.setContentTitle(messLibarro[ ( mArroseur)]);
+        if (  mArroseur > -1) notifBuilder.setContentText(messLibarro[ ( mArroseur)]);
         if (mAction) notifBuilder.addAction(R.drawable.ic_stop2,"Arrêter maintenant",snoozePendingIntent);
         if (mPhoto) {
             Bitmap bitmap_large=null;

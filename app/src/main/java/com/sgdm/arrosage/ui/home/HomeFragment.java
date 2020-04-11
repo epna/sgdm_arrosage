@@ -7,18 +7,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 
 import com.ebanx.swipebtn.OnActiveListener;
-import com.ebanx.swipebtn.OnStateChangeListener;
 import com.ebanx.swipebtn.SwipeButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DataSnapshot;
@@ -28,7 +23,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.sgdm.arrosage.MainActivity;
 import com.sgdm.arrosage.R;
-import com.sgdm.arrosage.ui.notifications.NotificationsViewModel;
 import com.shashank.sony.fancytoastlib.FancyToast;
 
 import org.json.JSONArray;
@@ -51,7 +45,7 @@ import static java.util.Calendar.MINUTE;
 public class HomeFragment extends Fragment {
 
 
-    public TextView txt_synthese;
+    public TextView txt_synthese, txt_nbSessions;
     public TextView txt_start;
     public TextView txt_warning;
     public TextView txt_stop;
@@ -67,6 +61,7 @@ public class HomeFragment extends Fragment {
         //notificationsViewModel = ViewModelProviders.of ( this ).get ( NotificationsViewModel.class );
         root = inflater.inflate ( R.layout.fragment_home, container, false );
         txt_synthese = (TextView) root.findViewById ( R.id.txt_home_synthese);
+        txt_nbSessions = (TextView) root.findViewById ( R.id.txt_nbsessions);
         txt_start = (TextView) root.findViewById ( R.id.txt_start_manu);
         txt_warning= (TextView) root.findViewById ( R.id.txt_warning_manu);
         txt_stop = (TextView) root.findViewById ( R.id.txt_stop_manu);
@@ -188,6 +183,7 @@ public class HomeFragment extends Fragment {
         }
         JSONArray manuel = null;
         JSONArray automatique = null;
+        JSONArray sessions = null;
 
         try {
             manuel = jsonObj.getJSONArray ( "manuel" );
@@ -240,13 +236,28 @@ public class HomeFragment extends Fragment {
                 e.printStackTrace ();
             }
         }
-
-
         try {
-            automatique = jsonObj.getJSONArray ( "automatique" );
+            sessions = jsonObj.getJSONArray ( "sessions" );
+
         } catch (JSONException e) {
             e.printStackTrace ();
         }
+        final Integer compteur =  sessions.length();
+        new Handler(Looper.getMainLooper()).post(new Runnable(){
+            @Override
+            public void run() {
+                txt_nbSessions.setText (  " sessions automatiques : " + String.valueOf ( compteur));
+            }
+        });
+
+        try {
+            automatique = jsonObj.getJSONArray ( "automatique" );
+
+        } catch (JSONException e) {
+            e.printStackTrace ();
+        }
+
+
         for (int j = 0; j < automatique.length (); j++) {
             JSONObject c = null;
             try {

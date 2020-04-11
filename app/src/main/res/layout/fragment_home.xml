@@ -41,24 +41,23 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
-            app:inner_text="SWIPE"
-            app:inner_text_color="@android:color/white"
-            app:inner_text_size="16sp"
-            app:inner_text_top_padding="18dp"
-            app:inner_text_bottom_padding="18dp"
-            app:inner_text_background="@drawable/shape_rounded"
-            app:button_image_height="60dp"
-            app:button_image_width="70dp"
+            app:button_background="@drawable/shape_button"
+            app:button_bottom_padding="2dp"
             app:button_image_disabled="@drawable/ic_watering3"
             app:button_image_enabled="@drawable/ic_stop"
-            app:button_left_padding="20dp"
-            app:button_right_padding="20dp"
-            app:button_top_padding="20dp"
-            app:button_bottom_padding="20dp"
-            app:button_background="@drawable/shape_button"
-            app:initial_state="disabled"
+            app:button_image_height="50dp"
+            app:button_image_width="50dp"
+            app:button_left_padding="2dp"
+            app:button_right_padding="2dp"
             app:has_activate_state="false"
-            />
+            app:initial_state="disabled"
+            app:inner_text="SWIPE"
+            app:inner_text_background="@drawable/shape_rounded"
+            app:inner_text_bottom_padding="18dp"
+            app:inner_text_color="@android:color/white"
+            app:inner_text_left_padding="18dp"
+            app:inner_text_size="14sp"
+            app:inner_text_top_padding="18dp" />
 
 
 
@@ -86,24 +85,24 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
-            app:inner_text="SWIPE"
-            app:inner_text_color="@android:color/white"
-            app:inner_text_size="16sp"
-            app:inner_text_top_padding="18dp"
-            app:inner_text_bottom_padding="18dp"
-            app:inner_text_background="@drawable/shape_rounded"
-            app:button_image_height="60dp"
-            app:button_image_width="70dp"
-            app:button_image_disabled="@drawable/ic_watering3"
-            app:button_image_enabled="@drawable/ic_stop"
-            app:button_left_padding="20dp"
-            app:button_right_padding="20dp"
-            app:button_top_padding="20dp"
-            app:button_bottom_padding="20dp"
             app:button_background="@drawable/shape_button"
-            app:initial_state="disabled"
+            app:button_bottom_padding="2dp"
+            app:button_image_disabled="@drawable/ic_watering3"
+            app:inner_text_left_padding="18dp"
+            app:button_image_enabled="@drawable/ic_stop"
+            app:button_image_height="50dp"
+            app:button_image_width="50dp"
+            app:button_left_padding="2dp"
+            app:button_right_padding="2dp"
+            app:button_top_padding="2dp"
             app:has_activate_state="false"
-            />
+            app:initial_state="disabled"
+            app:inner_text="SWIPE"
+            app:inner_text_background="@drawable/shape_rounded"
+            app:inner_text_bottom_padding="18dp"
+            app:inner_text_color="@android:color/white"
+            app:inner_text_size="14sp"
+            app:inner_text_top_padding="18dp" />
 
 
     </LinearLayout>
@@ -125,7 +124,6 @@
         android:weightSum="10"
 
         >
-
 
 
         <com.ebanx.swipebtn.SwipeButton
@@ -134,24 +132,24 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
-            app:inner_text="SWIPE"
-            app:inner_text_color="@android:color/white"
-            app:inner_text_size="16sp"
-            app:inner_text_top_padding="18dp"
-            app:inner_text_bottom_padding="18dp"
-            app:inner_text_background="@drawable/shape_rounded"
-            app:button_image_height="60dp"
-            app:button_image_width="70dp"
+            app:button_background="@drawable/shape_button"
+            app:inner_text_left_padding="18dp"
+            app:button_bottom_padding="2dp"
             app:button_image_disabled="@drawable/ic_watering3"
             app:button_image_enabled="@drawable/ic_stop"
-            app:button_left_padding="20dp"
-            app:button_right_padding="20dp"
-            app:button_top_padding="20dp"
-            app:button_bottom_padding="20dp"
-            app:button_background="@drawable/shape_button"
-            app:initial_state="disabled"
+            app:button_image_height="50dp"
+            app:button_image_width="50dp"
+            app:button_left_padding="2dp"
+            app:button_right_padding="2dp"
+            app:button_top_padding="2dp"
             app:has_activate_state="false"
-            />
+            app:initial_state="disabled"
+            app:inner_text="SWIPE"
+            app:inner_text_background="@drawable/shape_rounded"
+            app:inner_text_bottom_padding="18dp"
+            app:inner_text_color="@android:color/white"
+            app:inner_text_size="14sp"
+            app:inner_text_top_padding="18dp" />
 
 
     </LinearLayout>
@@ -170,30 +168,31 @@
         android:weightSum="10"
 
         >
+
         <com.ebanx.swipebtn.SwipeButton
             android:id="@+id/swipe_arro4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
-            app:inner_text="SWIPE"
-            app:inner_text_color="@android:color/white"
-            app:inner_text_size="16sp"
-            app:inner_text_top_padding="18dp"
-            app:inner_text_bottom_padding="18dp"
-            app:inner_text_background="@drawable/shape_rounded"
-            app:button_image_height="60dp"
-            app:button_image_width="70dp"
+            app:button_background="@drawable/shape_button"
+            app:button_bottom_padding="2dp"
+            app:inner_text_left_padding="18dp"
             app:button_image_disabled="@drawable/ic_watering3"
             app:button_image_enabled="@drawable/ic_stop"
-            app:button_left_padding="20dp"
-            app:button_right_padding="20dp"
-            app:button_top_padding="20dp"
-            app:button_bottom_padding="20dp"
-            app:button_background="@drawable/shape_button"
-            app:initial_state="disabled"
+            app:button_image_height="50dp"
+            app:button_image_width="50dp"
+            app:button_left_padding="2dp"
+            app:button_right_padding="2dp"
+            app:button_top_padding="2dp"
             app:has_activate_state="false"
-            />
+            app:initial_state="disabled"
+            app:inner_text="SWIPE"
+            app:inner_text_background="@drawable/shape_rounded"
+            app:inner_text_bottom_padding="18dp"
+            app:inner_text_color="@android:color/white"
+            app:inner_text_size="14sp"
+            app:inner_text_top_padding="18dp" />
 
 
 
@@ -234,33 +233,35 @@
             android:padding="15dp"
             android:weightSum="9"
             >
+
             <TextView
                 android:id="@+id/txt_start_manu"
-                android:layout_weight="3"
-                android:layout_gravity="center_vertical|start"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="5dp"
-                android:drawableLeft="@drawable/ic_start"
+                android:layout_gravity="center_vertical|start"
+                android:layout_weight="3"
                 android:background="@drawable/bkg_start"
+
+
+                android:padding="5dp"
                 android:text=""
-                android:textSize="15sp">
-            </TextView>
+                android:textAlignment="center"
+                android:textSize="15sp"></TextView>
 
             <TextView
                 android:id="@+id/txt_warning_manu"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/ic_warning"
+
                 android:layout_gravity="center_vertical|start"
-                android:layout_marginRight="5dp"
                 android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
                 android:layout_weight="3"
                 android:background="@drawable/bkg_warning"
                 android:padding="5dp"
                 android:text=""
-                android:textSize="15sp">
-            </TextView>
+                android:textAlignment="center"
+                android:textSize="15sp"></TextView>
 
             <TextView
                 android:id="@+id/txt_stop_manu"
@@ -270,12 +271,28 @@
                 android:layout_marginRight="5dp"
                 android:layout_weight="3"
                 android:background="@drawable/bkg_stop"
-                android:drawableLeft="@drawable/ic_stop2"
+
                 android:padding="5dp"
                 android:text=""
+                android:textAlignment="center"
                 android:textColor="@color/md_black_1000"
                 android:textSize="15sp"></TextView>
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/txt_nbsessions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/bkg_libelle"
+            android:gravity="center"
+            android:text=""
+            android:textAlignment="center"
+            android:textSize="12sp"
+            android:textStyle="italic">
+
+        </TextView>
     </LinearLayout>
     </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -24,7 +24,7 @@ import com.sgdm.arrosage.sessions_details;
 import java.util.ArrayList;
 
 
-public class DashboardFragment extends Fragment {
+public class AutomatiqueFragment extends Fragment {
 
     //private DashboardViewModel dashboardViewModel;
     public RecyclerView recyclerView;
@@ -36,7 +36,7 @@ public class DashboardFragment extends Fragment {
 
 public View onCreateView(@NonNull LayoutInflater inflater,ViewGroup container, Bundle savedInstanceState) {
 
-    View root = inflater.inflate ( R.layout.fragment_dashboard, container, false );
+    View root = inflater.inflate ( R.layout.fragment_automatique, container, false );
     sessions =  new ArrayList<> (  );
     recyclerView = root.findViewById ( R.id.recyclerview );
 

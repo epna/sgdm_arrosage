@@ -2,8 +2,8 @@
     <string name="app_name">Arrosage</string>
     <string name="title_home">Manuel</string>
     <string name="title_dashboard">Automatique</string>
-    <string name="title_notifications">paramétres</string>
-    <string name="IP_arduino">http://192.168.1.92</string>
+    <string name="title_notifications">Paramètres</string>
+    <string name="IP_arduino">http://sgdm34.ddns.net:76</string>
     <string-array name="days_array">
         <item>L</item>
         <item>Ma</item>
@@ -13,5 +13,4 @@
         <item>S</item>
         <item>D</item>
     </string-array>
-
 </resources>
